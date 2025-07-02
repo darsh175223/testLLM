@@ -1,4 +1,6 @@
+# main.py
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
 import uvicorn
@@ -16,6 +18,21 @@ app = FastAPI(
     description="API wrapper for Qwen 2.5B instruct model using Ollama",
     version="1.0.0"
 )
+
+# === CORS configuration ===
+origins = [
+    "http://localhost:3000",
+    # add other origins here if needed, e.g. "https://your-production-domain.com"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["*"],  # or specify ["Content-Type", "Authorization", ...]
+)
+# ==========================
 
 llm_service = LLMService(model_name="qwen2.5:0.5b-instruct-q6_K")
 
